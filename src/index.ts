@@ -9,9 +9,16 @@ import { walletHubClient } from "./walletHubClient.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
+const corsOrigins = process.env.CORS_ORIGIN?.split(",").map((value) => value.trim()).filter(Boolean) ?? [
+  "https://connect-wallet-hub.vercel.app",
+];
 
 app.set("trust proxy", true);
-app.use(cors({ origin: process.env.CORS_ORIGIN?.split(",") ?? "*" }));
+app.use(
+  cors({
+    origin: corsOrigins,
+  }),
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
