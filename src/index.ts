@@ -9,14 +9,29 @@ import { walletHubClient } from "./walletHubClient.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
-const corsOrigins = process.env.CORS_ORIGIN?.split(",").map((value) => value.trim()).filter(Boolean) ?? [
+const corsOrigins =
+  process.env.CORS_ORIGIN?.split(",").map((value) => value.trim()).filter(Boolean) ?? [];
+const corsAllowlist = new Set([
   "https://connect-wallet-hub.vercel.app",
-];
+  "http://localhost:8080",
+  "http://localhost:5173",
+  ...corsOrigins,
+]);
+const vercelPreviewPattern = /^https:\/\/connect-wallet-hub(-.*)?\.vercel\.app$/;
 
 app.set("trust proxy", true);
 app.use(
   cors({
-    origin: corsOrigins,
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+      if (corsAllowlist.has(origin) || vercelPreviewPattern.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
+    optionsSuccessStatus: 204,
   }),
 );
 app.use(express.json({ limit: "1mb" }));
