@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 import morgan from "morgan";
 import connectionsRouter from "./routes/connections.js";
 import usersRouter from "./routes/users.js";
@@ -9,6 +10,20 @@ import { walletHubClient } from "./walletHubClient.js";
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
 app.set("trust proxy", true);
+
+app.use(
+  cors({
+    origin: [
+      "https://connect-wallet-hub.vercel.app",
+      "http://localhost:3000",
+      "http://localhost:5173",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
