@@ -1,6 +1,5 @@
 import "dotenv/config";
 import express from "express";
-import cors from "cors";
 import morgan from "morgan";
 import connectionsRouter from "./routes/connections.js";
 import usersRouter from "./routes/users.js";
@@ -10,15 +9,17 @@ import { walletHubClient } from "./walletHubClient.js";
 const app = express();
 const port = Number(process.env.PORT ?? 4000);
 app.set("trust proxy", true);
-app.use(
-  cors({
-    origin: true,
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    optionsSuccessStatus: 204,
-  }),
-);
-app.options("*", cors());
+app.use((req, res, next) => {
+  const origin = req.headers.origin ?? "*";
+  res.header("Access-Control-Allow-Origin", origin);
+  res.header("Vary", "Origin");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+  next();
+});
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
