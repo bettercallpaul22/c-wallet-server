@@ -13,8 +13,10 @@ const corsOrigins =
   process.env.CORS_ORIGIN?.split(",").map((value) => value.trim()).filter(Boolean) ?? [];
 const corsAllowlist = new Set([
   "https://connect-wallet-hub.vercel.app",
+  "https://connect-wallet-hub.vercel.app/",
   "http://localhost:8080",
   "http://localhost:5173",
+  "*"
   ...corsOrigins,
 ]);
 const vercelPreviewPattern = /^https:\/\/connect-wallet-hub(-.*)?\.vercel\.app$/;
