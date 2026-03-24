@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: [
       "https://connect-wallet-hub.vercel.app",
-      "http://localhost:3000",
+      "http://localhost:8080",
       "http://localhost:5173",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
