@@ -19,6 +19,23 @@ app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.get("/", (_req, res) => {
+  res.json({
+    message: "Welcome to the Wallet Hub server.",
+    docs: {
+      health: "/health",
+      users: "/api/users",
+      connections: "/api/connections",
+      userIps: "/api/user-ips",
+      walletHub: {
+        health: "/wallet-hub/health",
+        connections: "/wallet-hub/connections",
+        userIps: "/wallet-hub/user-ips",
+      },
+    },
+  });
+});
+
 app.get("/wallet-hub/health", async (_req, res) => {
   try {
     const payload = await walletHubClient.ping();
